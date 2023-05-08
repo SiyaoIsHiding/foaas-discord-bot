@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import https from 'node:https';
 import fetch from 'node-fetch';
 import { verifyKey } from 'discord-interactions';
 
@@ -53,10 +54,52 @@ export async function InstallGlobalCommands(appId, commands) {
 
 // Simple method that returns a random emoji from list
 export function getRandomEmoji() {
-  const emojiList = ['😭','😄','😌','🤓','😎','😤','🤖','😶‍🌫️','🌏','📸','💿','👋','🌊','✨'];
+  const emojiList = ['😭', '😄', '😌', '🤓', '😎', '😤', '🤖', '😶‍🌫️', '🌏', '📸', '💿', '👋', '🌊', '✨'];
   return emojiList[Math.floor(Math.random() * emojiList.length)];
 }
 
 export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const hostname = 'foaas-hoaxd.ondigitalocean.app';
+
+// options = { to: string}
+export function foaasRequest(options) {
+  const foaasOptions = {
+    hostname: 'foaas-hoaxd.ondigitalocean.app',
+    path: '/random/' + options.to + '/jane',
+    method: 'GET',
+    headers: {
+      Accept: 'application/json'
+    }
+  };
+  return new Promise((resolve, reject) => {
+    try {
+      const request = https.request(foaasOptions, (response) => {
+        let data = '';
+        response.on('data', (chunk) => {
+          data = data + chunk.toString();
+        });
+
+        response.on('end', () => {
+          const body = JSON.parse(data);
+          console.log(body);
+          resolve(body);
+        });
+
+      })
+
+      request.on('error', (error) => {
+        console.log('An error', error);
+        reject(error);
+      });
+
+      request.end()
+    }catch (e) {
+      console.log(e);
+      reject(e);
+    }
+
+  });
 }

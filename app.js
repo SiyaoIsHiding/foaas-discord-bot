@@ -1,4 +1,5 @@
 import 'dotenv/config';
+
 import express from 'express';
 import {
   InteractionType,
@@ -7,7 +8,7 @@ import {
   MessageComponentTypes,
   ButtonStyleTypes,
 } from 'discord-interactions';
-import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
+import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest, foaasRequest, hostname } from './utils.js';
 import { getShuffledOptions, getResult } from './game.js';
 
 // Create an express app
@@ -40,18 +41,29 @@ app.post('/interactions', async function (req, res) {
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
-
-    // "test" command
     if (name === 'fuck-off') {
-      // Send a message into the channel where command was triggered from
+      const to = req.body.data.options[0].value;
+      const foaasResBody = await foaasRequest({ to: to });
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          // Fetches a random emoji to send from a helper function
-          content: 'hello world ' + getRandomEmoji(),
+          content: foaasResBody.message,
         },
-      });
+      }).end();
     }
+
+    if (name === 'link-fuck-off') {
+      const to = req.body.data.options[0].value;
+      const from = req.body.data.options[1].value;
+      const nonce = Math.floor(Math.random() * 10000);
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: 'https://' + hostname + '/random/' + to + '/' + from + '?' + nonce,
+        },
+      }).end();
+    }
+
     // "challenge" command
     if (name === 'challenge' && id) {
       const userId = req.body.member.user.id;
@@ -85,46 +97,6 @@ app.post('/interactions', async function (req, res) {
           ],
         },
       });
-    }
-
-    if (type === InteractionType.MESSAGE_COMPONENT) {
-      // custom_id set in payload when sending message component
-      const componentId = data.custom_id;
-
-      if (componentId.startsWith('accept_button_')) {
-        // get the associated game ID
-        const gameId = componentId.replace('accept_button_', '');
-        // Delete message with token in request body
-        const endpoint = `webhooks/${process.env.APP_ID}/${req.body.token}/messages/${req.body.message.id}`;
-        try {
-          await res.send({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              // Fetches a random emoji to send from a helper function
-              content: 'What is your object of choice?',
-              // Indicates it'll be an ephemeral message
-              flags: InteractionResponseFlags.EPHEMERAL,
-              components: [
-                {
-                  type: MessageComponentTypes.ACTION_ROW,
-                  components: [
-                    {
-                      type: MessageComponentTypes.STRING_SELECT,
-                      // Append game ID
-                      custom_id: `select_choice_${gameId}`,
-                      options: getShuffledOptions(),
-                    },
-                  ],
-                },
-              ],
-            },
-          });
-          // Delete previous message
-          await DiscordRequest(endpoint, { method: 'DELETE' });
-        } catch (err) {
-          console.error('Error sending message:', err);
-        }
-      }
     }
   }
   if (type === InteractionType.MESSAGE_COMPONENT) {
@@ -203,7 +175,6 @@ app.post('/interactions', async function (req, res) {
       }
     }
   }
-
 });
 
 app.listen(PORT, () => {

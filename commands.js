@@ -17,7 +17,7 @@ function createCommandChoices() {
   return commandChoices;
 }
 
-// Simple test command
+// Simple Message Fuck Off Command
 const FOAAS_COMMAND = {
   name: 'fuck-off',
   description: 'Tell your loved ones to fuck off',
@@ -27,6 +27,27 @@ const FOAAS_COMMAND = {
       type: 3,
       name: 'target',
       description: 'input your target',
+      required: true,
+    },
+  ],
+};
+
+// Link Command
+const LINK_COMMAND = {
+  name: 'link-fuck-off',
+  description: 'Tell your loved ones to fuck off by sending a link',
+  type: 1,
+  options: [
+    {
+      type: 3,
+      name: 'target',
+      description: 'input your target',
+      required: true,
+    },
+    {
+      type: 3,
+      name: 'from',
+      description: 'input your name',
       required: true,
     },
   ],
@@ -48,6 +69,6 @@ const CHALLENGE_COMMAND = {
   type: 1,
 };
 
-const ALL_COMMANDS = [FOAAS_COMMAND, CHALLENGE_COMMAND];
+const ALL_COMMANDS = [FOAAS_COMMAND, LINK_COMMAND, CHALLENGE_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
