@@ -18,10 +18,18 @@ function createCommandChoices() {
 }
 
 // Simple test command
-const TEST_COMMAND = {
-  name: 'test',
-  description: 'Basic command',
+const FOAAS_COMMAND = {
+  name: 'fuck-off',
+  description: 'Tell your loved ones to fuck off',
   type: 1,
+  options: [
+    {
+      type: 3,
+      name: 'target',
+      description: 'input your target',
+      required: true,
+    },
+  ],
 };
 
 // Command containing options
@@ -34,12 +42,12 @@ const CHALLENGE_COMMAND = {
       name: 'object',
       description: 'Pick your object',
       required: true,
-      choices: createCommandChoices(),
+      // choices: createCommandChoices(),
     },
   ],
   type: 1,
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+const ALL_COMMANDS = [FOAAS_COMMAND, CHALLENGE_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);

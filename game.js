@@ -1,6 +1,7 @@
 import { capitalize } from './utils.js';
 
 export function getResult(p1, p2) {
+  console.log("game called", p1, p2);
   let gameResult;
   if (RPSChoices[p1.objectName] && RPSChoices[p1.objectName][p2.objectName]) {
     // o1 wins
