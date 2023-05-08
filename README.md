@@ -8,7 +8,7 @@ This is a bot to generate random fuck-off messages to your server. [Invite](http
 !!You shall not use this bot to harass or bully anyone!!
 ```
 
-I developed this bot to play with my boyfriend. I leave it here because it does not gain any popularity anyway. If this bot somehow is being used to bully or harass anyone, please lmk and I will shut it down immediately.
+I developed this bot to play with my boyfriend. I leave it here because it does not gain any popularity anyway. If this bot somehow is being used to bully or harass anyone or I find any strange logging at the backend, I will shut it down immediately.
 
 ## Usages
 ### `/flashing-fuck-off` Command to Send Flashing Random Fuck-off Messages
