@@ -8,7 +8,7 @@ import {
   MessageComponentTypes,
   ButtonStyleTypes,
 } from 'discord-interactions';
-import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest, foaasRequest, hostname } from './utils.js';
+import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest, foaasRequest, hostname, flashingMessages } from './utils.js';
 import { getShuffledOptions, getResult } from './game.js';
 
 // Create an express app
@@ -35,10 +35,6 @@ app.post('/interactions', async function (req, res) {
     return res.send({ type: InteractionResponseType.PONG });
   }
 
-  /**
-   * Handle slash command requests
-   * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
-   */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
     if (name === 'fuck-off') {
@@ -52,7 +48,7 @@ app.post('/interactions', async function (req, res) {
       }).end();
     }
 
-    if (name === 'link-fuck-off') {
+    else if (name === 'link-fuck-off') {
       const to = req.body.data.options[0].value;
       const from = req.body.data.options[1].value;
       const nonce = Math.floor(Math.random() * 10000);
@@ -62,6 +58,20 @@ app.post('/interactions', async function (req, res) {
           content: 'https://' + hostname + '/random/' + to + '/' + from + '?' + nonce,
         },
       }).end();
+    }
+
+    else if (name === 'flashing-fuck-off') {
+      const to = req.body.data.options[0].value;
+      const from = req.body.data.options[1].value;
+      const nonce = Math.floor(Math.random() * 10000);
+      const toreturn = res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: 'https://' + hostname + '/random/' + to + '/' + from + '?' + nonce,
+        },
+      }).end();
+      flashingMessages({ to: to, from: from, token: req.body.token });
+      return toreturn;
     }
 
     // "challenge" command

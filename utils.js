@@ -64,7 +64,7 @@ export function capitalize(str) {
 
 export const hostname = 'foaas-hoaxd.ondigitalocean.app';
 
-// options = { to: string}
+// options = { to: string, from : string}
 export function foaasRequest(options) {
   const foaasOptions = {
     hostname: 'foaas-hoaxd.ondigitalocean.app',
@@ -96,10 +96,26 @@ export function foaasRequest(options) {
       });
 
       request.end()
-    }catch (e) {
+    } catch (e) {
       console.log(e);
       reject(e);
     }
 
+  });
+}
+
+// options = {token : string}
+export function flashingMessages(options) {
+  const endpoint = `webhooks/${process.env.APP_ID}/${options.token}/messages/@original`;
+  return new Promise((resolve, reject) => {
+    for (var i = 1; i <= 20; i++) {
+      setTimeout(() => {
+        const nonce = Math.floor(Math.random() * 10000);
+        DiscordRequest(endpoint, { method: 'PATCH', body: { 
+          content: 'https://' + hostname + '/random/' + options.to + '/' + options.from + '?' + nonce,
+        } });
+        resolve();
+      }, 3000 * i);
+    }
   });
 }

@@ -53,22 +53,28 @@ const LINK_COMMAND = {
   ],
 };
 
-// Command containing options
-const CHALLENGE_COMMAND = {
-  name: 'challenge',
-  description: 'Challenge to a match of rock paper scissors',
+// Link Command
+const FLASHING_COMMAND = {
+  name: 'flashing-fuck-off',
+  description: 'Tell your loved ones to fuck off by sending a flashing fuck-off message',
+  type: 1,
   options: [
     {
       type: 3,
-      name: 'object',
-      description: 'Pick your object',
+      name: 'target',
+      description: 'input your target',
       required: true,
-      // choices: createCommandChoices(),
+    },
+    {
+      type: 3,
+      name: 'from',
+      description: 'input your name',
+      required: true,
     },
   ],
-  type: 1,
 };
 
-const ALL_COMMANDS = [FOAAS_COMMAND, LINK_COMMAND, CHALLENGE_COMMAND];
+
+const ALL_COMMANDS = [FOAAS_COMMAND, LINK_COMMAND, FLASHING_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
